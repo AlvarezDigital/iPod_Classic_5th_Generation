@@ -1,0 +1,2593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>iPod Classic 5th Generation - Offline Local Music Player</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom Authentic 5th Gen White iPod Classic Hardware & LCD Styling */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        :root {
+            --ipod-shell-white: #f7f8fa;
+            --ipod-shell-edge: #e2e5ea;
+            --ipod-wheel-gray: #d4d6da;
+            --lcd-bg: #ffffff;
+            --lcd-text: #111111;
+            --lcd-border: #2a2d32;
+            --ipod-blue-top: #58a6ff;
+            --ipod-blue-bottom: #1b66d1;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, "Inter", sans-serif;
+            background: radial-gradient(circle at 50% 25%, #2d333b 0%, #16191d 70%, #0d0f12 100%);
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            color: #f0f2f5;
+        }
+
+        /* Metallic Chrome Outer Rim & Glossy White Polycarbonate Body */
+        .ipod-chrome-rim {
+            position: relative;
+            width: 340px;
+            height: 560px;
+            min-width: 340px;
+            max-width: 340px;
+            min-height: 560px;
+            max-height: 560px;
+            flex-shrink: 0;
+            border-radius: 34px;
+            padding: 4px;
+            background: linear-gradient(135deg, #ffffff 0%, #a8b0b9 22%, #eef1f5 48%, #7e8691 75%, #dce1e7 100%);
+            box-shadow:
+                0 30px 70px rgba(0, 0, 0, 0.75),
+                0 10px 25px rgba(0, 0, 0, 0.5),
+                inset 0 1px 2px rgba(255, 255, 255, 0.9);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .ipod-chrome-rim.drag-over {
+            transform: scale(1.02);
+            box-shadow:
+                0 0 0 4px #3b82f6,
+                0 30px 70px rgba(59, 130, 246, 0.45);
+        }
+
+        .ipod-polycarbonate-body {
+            width: 100%;
+            height: 100%;
+            border-radius: 30px;
+            background: linear-gradient(160deg, #ffffff 0%, #f5f6f8 55%, #e8eaee 100%);
+            box-shadow:
+                inset 0 2px 5px rgba(255, 255, 255, 1),
+                inset 0 -4px 10px rgba(0, 0, 0, 0.08),
+                inset 2px 0 6px rgba(255, 255, 255, 0.8),
+                inset -2px 0 6px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 22px 22px 26px 22px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Subtle glossy acrylic top coat reflection */
+        .ipod-polycarbonate-body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 46%;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.05) 100%);
+            border-radius: 30px 30px 50% 50% / 30px 30px 14px 14px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* 4:3 Color LCD Screen Bezel */
+        .ipod-screen-bezel {
+            width: 288px;
+            height: 218px;
+            min-width: 288px;
+            max-width: 288px;
+            min-height: 218px;
+            max-height: 218px;
+            flex-shrink: 0;
+            background: #1b1d20;
+            border-radius: 9px;
+            padding: 3px;
+            box-shadow:
+                inset 0 2px 4px rgba(0, 0, 0, 0.85),
+                0 1px 0 rgba(255, 255, 255, 0.9);
+            position: relative;
+            z-index: 2;
+        }
+
+        .ipod-lcd-screen {
+            width: 282px;
+            height: 212px;
+            min-width: 282px;
+            max-width: 282px;
+            min-height: 212px;
+            max-height: 212px;
+            background: #ffffff;
+            border-radius: 6px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            color: #111111;
+            position: relative;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.12);
+            transition: filter 0.2s ease, background-color 0.2s ease;
+        }
+
+        .ipod-lcd-screen.backlight-dim {
+            filter: brightness(0.78) contrast(0.96);
+        }
+
+        .ipod-lcd-screen.high-contrast {
+            filter: contrast(1.18);
+        }
+
+        /* Top Status Bar */
+        .lcd-header {
+            height: 22px;
+            min-height: 22px;
+            background: linear-gradient(180deg, #f9fafb 0%, #e1e5ea 50%, #cfd5dc 100%);
+            border-bottom: 1px solid #9da5b0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 7px;
+            font-size: 11.5px;
+            font-weight: 700;
+            color: #1c2026;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+            z-index: 5;
+        }
+
+        .lcd-title {
+            flex: 1;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 0 4px;
+            letter-spacing: -0.01em;
+        }
+
+        /* Battery Icon */
+        .battery-icon {
+            width: 21px;
+            height: 10px;
+            border: 1px solid #4a515a;
+            border-radius: 2px;
+            padding: 1px;
+            position: relative;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+        }
+
+        .battery-icon::after {
+            content: "";
+            position: absolute;
+            right: -3px;
+            top: 2px;
+            width: 2px;
+            height: 4px;
+            background: #4a515a;
+            border-radius: 0 1px 1px 0;
+        }
+
+        .battery-fill {
+            height: 100%;
+            width: 85%;
+            background: linear-gradient(180deg, #74e369 0%, #2eb82e 100%);
+            border-radius: 0.5px;
+        }
+
+        /* LCD Content Area */
+        .lcd-body {
+            flex: 1;
+            width: 282px;
+            height: 190px;
+            min-height: 190px;
+            max-height: 190px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            background: #ffffff;
+        }
+
+        /* Classic iPod Menu List */
+        .menu-list {
+            flex: 1;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: none;
+        }
+
+        .menu-list::-webkit-scrollbar {
+            display: none;
+        }
+
+        .menu-item {
+            width: 100%;
+            height: 25px;
+            min-height: 25px;
+            max-height: 25px;
+            padding: 0 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: #111111;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            cursor: pointer;
+            gap: 6px;
+            overflow: hidden;
+        }
+
+        .menu-item.tall-item {
+            height: 34px;
+            min-height: 34px;
+            max-height: 34px;
+        }
+
+        .menu-item.selected {
+            background: linear-gradient(180deg, #5ba8ff 0%, #2878e5 50%, #1962cc 100%);
+            color: #ffffff;
+            text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+        }
+
+        .menu-item-label {
+            flex: 1;
+            min-width: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .menu-item-sub {
+            font-size: 10px;
+            font-weight: 400;
+            opacity: 0.72;
+            display: block;
+            line-height: 1.1;
+        }
+
+        .menu-item.selected .menu-item-sub {
+            opacity: 0.92;
+        }
+
+        .menu-chevron {
+            font-size: 12px;
+            font-weight: 700;
+            opacity: 0.75;
+            flex-shrink: 0;
+        }
+
+        .menu-item.selected .menu-chevron {
+            opacity: 1;
+        }
+
+        /* Album Thumbnail in Lists */
+        .album-thumb {
+            width: 26px;
+            height: 26px;
+            min-width: 26px;
+            min-height: 26px;
+            aspect-ratio: 1 / 1;
+            border-radius: 2px;
+            object-fit: cover;
+            background: #e5e7eb;
+            border: 1px solid rgba(0, 0, 0, 0.15);
+            flex-shrink: 0;
+        }
+
+        /* Now Playing 5th Gen Split View */
+        .now-playing-view {
+            flex: 1;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            padding: 8px 10px 7px 10px;
+            justify-content: space-between;
+            background: linear-gradient(180deg, #ffffff 0%, #f5f7fa 100%);
+        }
+
+        .np-top-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 10.5px;
+            font-weight: 600;
+            color: #4b5563;
+            margin-bottom: 4px;
+        }
+
+        .np-main-split {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .np-art-wrapper {
+            width: 96px;
+            height: 96px;
+            min-width: 96px;
+            min-height: 96px;
+            max-width: 96px;
+            max-height: 96px;
+            aspect-ratio: 1 / 1;
+            flex-shrink: 0;
+            position: relative;
+            border-radius: 2px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+            border: 1px solid #cbd5e1;
+            background: #f1f5f9;
+            overflow: hidden;
+        }
+
+        .np-art-wrapper img {
+            width: 100%;
+            height: 100%;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            display: block;
+        }
+
+        .np-track-details {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 3px;
+        }
+
+        .np-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #0f172a;
+            line-height: 1.2;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .np-artist {
+            font-size: 11.5px;
+            font-weight: 600;
+            color: #334155;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .np-album {
+            font-size: 11px;
+            font-weight: 500;
+            color: #64748b;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Progress Bar & Volume Overlay */
+        .np-bottom-bar {
+            margin-top: 6px;
+        }
+
+        .scrubber-track {
+            width: 100%;
+            height: 9px;
+            border-radius: 5px;
+            background: linear-gradient(180deg, #d1d5db 0%, #f3f4f6 100%);
+            border: 1px solid #9ca3af;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .scrubber-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(180deg, #74b9ff 0%, #2980b9 55%, #1c6ea4 100%);
+            border-radius: 4px 0 0 4px;
+            transition: width 0.1s linear;
+        }
+
+        .volume-fill {
+            height: 100%;
+            width: 80%;
+            background: linear-gradient(180deg, #60a5fa 0%, #2563eb 100%);
+            border-radius: 4px;
+        }
+
+        .scrubber-times {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-top: 2px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Click Wheel Assembly */
+        .click-wheel-container {
+            flex: 1;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 2;
+            padding-top: 10px;
+        }
+
+        .click-wheel {
+            width: 212px;
+            height: 212px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 30%, #dfe1e5 0%, #cccfd4 65%, #bec2c8 100%);
+            box-shadow:
+                inset 0 1px 3px rgba(0, 0, 0, 0.22),
+                inset 0 -1px 2px rgba(255, 255, 255, 0.7),
+                0 1px 2px rgba(255, 255, 255, 0.9);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: none;
+            cursor: grab;
+        }
+
+        .click-wheel:active {
+            cursor: grabbing;
+        }
+
+        /* Wheel Quadrant Buttons */
+        .wheel-btn {
+            position: absolute;
+            color: #ffffff;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.22);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.08s ease, opacity 0.08s ease;
+            z-index: 3;
+        }
+
+        .wheel-btn:active, .wheel-btn.pressed {
+            transform: scale(0.92);
+            opacity: 0.8;
+        }
+
+        .wheel-btn-top {
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 84px;
+            height: 36px;
+            font-size: 12px;
+        }
+
+        .wheel-btn-top:active, .wheel-btn-top.pressed {
+            transform: translateX(-50%) scale(0.92);
+        }
+
+        .wheel-btn-bottom {
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 84px;
+            height: 36px;
+        }
+
+        .wheel-btn-bottom:active, .wheel-btn-bottom.pressed {
+            transform: translateX(-50%) scale(0.92);
+        }
+
+        .wheel-btn-left {
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 42px;
+            height: 76px;
+        }
+
+        .wheel-btn-left:active, .wheel-btn-left.pressed {
+            transform: translateY(-50%) scale(0.92);
+        }
+
+        .wheel-btn-right {
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 42px;
+            height: 76px;
+        }
+
+        .wheel-btn-right:active, .wheel-btn-right.pressed {
+            transform: translateY(-50%) scale(0.92);
+        }
+
+        /* Center White Select Button */
+        .center-select-btn {
+            width: 76px;
+            height: 76px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 30%, #ffffff 0%, #f1f3f6 70%, #e1e4e9 100%);
+            box-shadow:
+                inset 0 2px 4px rgba(0, 0, 0, 0.14),
+                0 1px 1px rgba(255, 255, 255, 0.85);
+            border: 1px solid #b8bcc2;
+            cursor: pointer;
+            z-index: 4;
+            transition: transform 0.08s ease, box-shadow 0.08s ease;
+        }
+
+        .center-select-btn:active, .center-select-btn.pressed {
+            transform: scale(0.96);
+            box-shadow:
+                inset 0 3px 6px rgba(0, 0, 0, 0.25),
+                0 1px 0 rgba(255, 255, 255, 0.6);
+        }
+
+        /* Cover Flow Horizontal Browser */
+        .coverflow-view {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 6px;
+            background: linear-gradient(180deg, #ffffff 0%, #e2e8f0 72%, #cbd5e1 100%);
+            overflow: hidden;
+        }
+
+        .coverflow-stage {
+            flex: 1;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            perspective: 500px;
+        }
+
+        .cf-card {
+            position: absolute;
+            width: 96px;
+            height: 96px;
+            border-radius: 3px;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.22s ease;
+            overflow: hidden;
+            background: #f8fafc;
+        }
+
+        .cf-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .cf-meta {
+            text-align: center;
+            width: 100%;
+            padding: 0 8px;
+        }
+
+        .cf-album-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #0f172a;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .cf-album-artist {
+            font-size: 10.5px;
+            font-weight: 500;
+            color: #475569;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    </style>
+</head>
+<body class="p-4 select-none">
+
+    <!-- Hidden File Inputs for Folder, Single Audio File, or Multiple Audio Files -->
+    <input type="file" id="folderInput" webkitdirectory directory multiple class="hidden">
+    <input type="file" id="filesInput" multiple accept="audio/*,.mp3,.m4a,.flac,.wav,.ogg,.aac,.opus,.jpg,.jpeg,.png,.webp" class="hidden">
+
+    <!-- White iPod Classic 5th Generation Hardware -->
+    <div id="ipodDevice" class="ipod-chrome-rim" title="Add unlimited albums & songs via iPod Menu or drag & drop local audio files or music folders onto the iPod">
+        <div class="ipod-polycarbonate-body">
+
+            <!-- 4:3 Color LCD Display -->
+            <div class="ipod-screen-bezel">
+                <div id="lcdScreen" class="ipod-lcd-screen">
+                    <!-- Top Status Header -->
+                    <div class="lcd-header">
+                        <div id="headerPlayIcon" class="w-5 flex items-center justify-start text-blue-600">
+                            <!-- Play/Pause SVG injected dynamically -->
+                        </div>
+                        <div id="headerTitle" class="lcd-title">iPod</div>
+                        <div class="w-6 flex items-center justify-end">
+                            <div class="battery-icon">
+                                <div class="battery-fill"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic LCD Screen View -->
+                    <div id="lcdBody" class="lcd-body">
+                        <!-- Rendered via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tactile Gray Click Wheel -->
+            <div class="click-wheel-container">
+                <div id="clickWheel" class="click-wheel">
+                    <!-- MENU (Top) -->
+                    <div id="btnMenu" class="wheel-btn wheel-btn-top" role="button" aria-label="Menu">MENU</div>
+
+                    <!-- Previous / Rewind (Left) -->
+                    <div id="btnPrev" class="wheel-btn wheel-btn-left" role="button" aria-label="Previous">
+                        <svg width="20" height="12" viewBox="0 0 24 14" fill="currentColor">
+                            <rect x="1" y="1" width="2.5" height="12"/>
+                            <polygon points="13,1 3.5,7 13,13"/>
+                            <polygon points="22.5,1 13,7 22.5,13"/>
+                        </svg>
+                    </div>
+
+                    <!-- Next / Fast-Forward (Right) -->
+                    <div id="btnNext" class="wheel-btn wheel-btn-right" role="button" aria-label="Next">
+                        <svg width="20" height="12" viewBox="0 0 24 14" fill="currentColor">
+                            <polygon points="1.5,1 11,7 1.5,13"/>
+                            <polygon points="11,1 20.5,7 11,13"/>
+                            <rect x="20.5" y="1" width="2.5" height="12"/>
+                        </svg>
+                    </div>
+
+                    <!-- Play / Pause (Bottom) -->
+                    <div id="btnPlayPause" class="wheel-btn wheel-btn-bottom" role="button" aria-label="Play or Pause">
+                        <svg width="22" height="12" viewBox="0 0 26 14" fill="currentColor">
+                            <polygon points="2,1 12,7 2,13"/>
+                            <rect x="15" y="1" width="3" height="12"/>
+                            <rect x="20.5" y="1" width="3" height="12"/>
+                        </svg>
+                    </div>
+
+                    <!-- Center Select Button -->
+                    <div id="btnCenter" class="center-select-btn" role="button" aria-label="Select"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- HTML5 Audio Element -->
+    <audio id="audioPlayer" preload="metadata"></audio>
+
+    <script>
+        /**
+         * White iPod Classic 5th Generation - Offline Local Music Player
+         * Supports uploading unlimited albums, folders, and single songs cumulatively
+         * across multiple selections or drag-and-drop batches without wiping existing music.
+         */
+
+        // ==========================================
+        // 1. DEFAULT FALLBACK ALBUM ART GENERATOR
+        // ==========================================
+        function createDefaultAlbumArt() {
+            const canvas = document.createElement("canvas");
+            canvas.width = 240;
+            canvas.height = 240;
+            const ctx = canvas.getContext("2d");
+
+            // Classic clean silver/blue iPod musical note artwork
+            const grad = ctx.createLinearGradient(0, 0, 240, 240);
+            grad.addColorStop(0, "#e2e8f0");
+            grad.addColorStop(1, "#94a3b8");
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, 240, 240);
+
+            // Subtle inner frame
+            ctx.strokeStyle = "rgba(255,255,255,0.6)";
+            ctx.lineWidth = 4;
+            ctx.strokeRect(10, 10, 220, 220);
+
+            // Musical double eighth-note icon
+            ctx.fillStyle = "#475569";
+            ctx.beginPath();
+            ctx.ellipse(86, 162, 20, 15, -0.3, 0, Math.PI * 2);
+            ctx.ellipse(154, 148, 20, 15, -0.3, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillRect(101, 74, 9, 88);
+            ctx.fillRect(169, 60, 9, 88);
+
+            ctx.beginPath();
+            ctx.moveTo(101, 74);
+            ctx.lineTo(178, 60);
+            ctx.lineTo(178, 76);
+            ctx.lineTo(101, 90);
+            ctx.closePath();
+            ctx.fill();
+
+            return canvas.toDataURL("image/png");
+        }
+
+        const DEFAULT_COVER_URL = createDefaultAlbumArt();
+
+        // ==========================================
+        // 2. SYNTHESIZED CLICK WHEEL PIEZO SOUND
+        // ==========================================
+        class ClickSoundEngine {
+            constructor() {
+                this.enabled = true;
+                this.ctx = null;
+            }
+
+            playClick() {
+                if (!this.enabled) return;
+                try {
+                    if (!this.ctx) {
+                        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                        if (AudioCtx) this.ctx = new AudioCtx();
+                    }
+                    if (!this.ctx) return;
+                    if (this.ctx.state === "suspended") {
+                        this.ctx.resume();
+                    }
+
+                    const now = this.ctx.currentTime;
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+
+                    // Authentic crisp iPod piezo click transient
+                    osc.type = "triangle";
+                    osc.frequency.setValueAtTime(1650, now);
+                    osc.frequency.exponentialRampToValueAtTime(320, now + 0.014);
+
+                    gain.gain.setValueAtTime(0.14, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.015);
+
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+
+                    osc.start(now);
+                    osc.stop(now + 0.016);
+                } catch (e) {
+                    // Ignore audio context autoplay errors until user interacts
+                }
+            }
+        }
+
+        const clickSound = new ClickSoundEngine();
+
+        // ==========================================
+        // 3. BINARY METADATA & EMBEDDED ART PARSER
+        // ==========================================
+        const MetadataParser = {
+            async parseAudioFile(file, folderImageMap) {
+                const fallback = this.parseFilenameFallback(file);
+                let meta = {
+                    title: fallback.title,
+                    artist: fallback.artist,
+                    album: fallback.album,
+                    track: fallback.track,
+                    coverUrl: null
+                };
+
+                try {
+                    // Inspect header first to determine exact tag size (handles large embedded artwork > 1.5MB)
+                    const headerSlice = await file.slice(0, Math.min(file.size, 32)).arrayBuffer();
+                    const headerView = new DataView(headerSlice);
+
+                    if (headerView.byteLength >= 10 && this.getAscii(headerView, 0, 3) === "ID3") {
+                        const tagSize =
+                            ((headerView.getUint8(6) & 0x7f) << 21) |
+                            ((headerView.getUint8(7) & 0x7f) << 14) |
+                            ((headerView.getUint8(8) & 0x7f) << 7) |
+                            (headerView.getUint8(9) & 0x7f);
+                        const readLen = Math.min(file.size, Math.max(10 + tagSize, 256 * 1024));
+                        const buffer = await file.slice(0, readLen).arrayBuffer();
+                        const view = new DataView(buffer);
+
+                        const id3 = this.parseID3v2(view);
+                        if (id3.title) meta.title = id3.title;
+                        if (id3.artist) meta.artist = id3.artist;
+                        if (id3.album) meta.album = id3.album;
+                        if (id3.track) meta.track = id3.track;
+                        if (id3.coverUrl) meta.coverUrl = id3.coverUrl;
+                    } else if (headerView.byteLength >= 4 && this.getAscii(headerView, 0, 4) === "fLaC") {
+                        // Read up to 6MB for FLAC PICTURE blocks
+                        const readLen = Math.min(file.size, 6 * 1024 * 1024);
+                        const buffer = await file.slice(0, readLen).arrayBuffer();
+                        const view = new DataView(buffer);
+
+                        const flac = this.parseFLAC(view);
+                        if (flac.title) meta.title = flac.title;
+                        if (flac.artist) meta.artist = flac.artist;
+                        if (flac.album) meta.album = flac.album;
+                        if (flac.track) meta.track = flac.track;
+                        if (flac.coverUrl) meta.coverUrl = flac.coverUrl;
+                    } else if (headerView.byteLength >= 12 && this.getAscii(headerView, 4, 4) === "ftyp") {
+                        // Scan top-level MP4 boxes to find 'moov' even if placed at the end of the file
+                        const mp4 = await this.parseMP4FromFile(file);
+                        if (mp4.title) meta.title = mp4.title;
+                        if (mp4.artist) meta.artist = mp4.artist;
+                        if (mp4.album) meta.album = mp4.album;
+                        if (mp4.track) meta.track = mp4.track;
+                        if (mp4.coverUrl) meta.coverUrl = mp4.coverUrl;
+                    }
+                } catch (err) {
+                    // Fallback gracefully to filename/folder parsing
+                }
+
+                // If no embedded cover art found, check if folder or multi-file selection included cover.jpg / folder.jpg
+                if (!meta.coverUrl && folderImageMap) {
+                    const dirPath = this.getDirectoryPath(file);
+                    if (folderImageMap.has(dirPath)) {
+                        meta.coverUrl = folderImageMap.get(dirPath);
+                    }
+                }
+
+                return meta;
+            },
+
+            getDirectoryPath(file) {
+                const rel = file.webkitRelativePath || "";
+                const idx = rel.lastIndexOf("/");
+                return idx >= 0 ? rel.substring(0, idx) : "__root__";
+            },
+
+            parseFilenameFallback(file) {
+                const rel = file.webkitRelativePath || file.name;
+                const parts = rel.split("/").filter(Boolean);
+                const rawName = parts[parts.length - 1].replace(/\.[^/.]+$/, "");
+
+                let track = 999;
+                let cleanTitle = rawName;
+
+                // Match leading track numbers like "01 - Song", "01. Song", "1 Song", "1-01 Song"
+                const discTrackMatch = rawName.match(/^\d{1,2}[-.](\d{1,3})[\s._-]+(.+)$/);
+                const trackMatch = rawName.match(/^(\d{1,3})[\s._-]+(.+)$/);
+                if (discTrackMatch) {
+                    track = parseInt(discTrackMatch[1], 10);
+                    cleanTitle = discTrackMatch[2].trim();
+                } else if (trackMatch) {
+                    track = parseInt(trackMatch[1], 10);
+                    cleanTitle = trackMatch[2].trim();
+                }
+
+                let artist = "Unknown Artist";
+                let album = "Singles";
+
+                if (parts.length >= 3) {
+                    // e.g. Artist / Album / 01 - Track.mp3
+                    artist = parts[parts.length - 3].trim();
+                    album = parts[parts.length - 2].trim();
+                } else if (parts.length === 2) {
+                    // e.g. Artist - Album / 01 - Track.mp3 or Album / 01 - Track.mp3
+                    const folderName = parts[0].trim();
+                    if (folderName.includes(" - ")) {
+                        const splitIdx = folderName.indexOf(" - ");
+                        artist = folderName.slice(0, splitIdx).trim();
+                        album = folderName.slice(splitIdx + 3).trim();
+                    } else {
+                        album = folderName;
+                    }
+                } else if (parts.length === 1) {
+                    // Standalone single file(s) selected without folder path: check "Artist - Title" pattern
+                    if (cleanTitle.includes(" - ")) {
+                        const splitIdx = cleanTitle.indexOf(" - ");
+                        artist = cleanTitle.slice(0, splitIdx).trim();
+                        cleanTitle = cleanTitle.slice(splitIdx + 3).trim();
+                    }
+                    album = "Singles";
+                }
+
+                return { title: cleanTitle, artist, album, track };
+            },
+
+            getAscii(view, offset, length) {
+                let str = "";
+                for (let i = 0; i < length && offset + i < view.byteLength; i++) {
+                    str += String.fromCharCode(view.getUint8(offset + i));
+                }
+                return str;
+            },
+
+            decodeText(bytes, encoding) {
+                try {
+                    if (encoding === 1 || encoding === 2) {
+                        const decoder = new TextDecoder("utf-16");
+                        return decoder.decode(bytes).replace(/\0/g, "").trim();
+                    } else if (encoding === 3) {
+                        const decoder = new TextDecoder("utf-8");
+                        return decoder.decode(bytes).replace(/\0/g, "").trim();
+                    } else {
+                        const decoder = new TextDecoder("iso-8859-1");
+                        return decoder.decode(bytes).replace(/\0/g, "").trim();
+                    }
+                } catch (e) {
+                    return "";
+                }
+            },
+
+            // Parse ID3v2.2, ID3v2.3 and ID3v2.4 Tags + APIC/PIC Album Art
+            parseID3v2(view) {
+                const res = {};
+                const version = view.getUint8(3);
+                const flags = view.getUint8(5);
+                const tagSize =
+                    ((view.getUint8(6) & 0x7f) << 21) |
+                    ((view.getUint8(7) & 0x7f) << 14) |
+                    ((view.getUint8(8) & 0x7f) << 7) |
+                    (view.getUint8(9) & 0x7f);
+
+                let pos = 10;
+                if (flags & 0x40 && pos + 4 <= view.byteLength) {
+                    const extSize = view.getUint32(pos);
+                    pos += extSize;
+                }
+
+                const maxEnd = Math.min(view.byteLength, 10 + tagSize);
+
+                while (pos + 10 <= maxEnd) {
+                    const frameId = this.getAscii(view, pos, 4);
+                    if (!/^[A-Z0-9]{4}$/.test(frameId)) break;
+
+                    let frameSize = 0;
+                    if (version === 4) {
+                        frameSize =
+                            ((view.getUint8(pos + 4) & 0x7f) << 21) |
+                            ((view.getUint8(pos + 5) & 0x7f) << 14) |
+                            ((view.getUint8(pos + 6) & 0x7f) << 7) |
+                            (view.getUint8(pos + 7) & 0x7f);
+                    } else {
+                        frameSize = view.getUint32(pos + 4);
+                    }
+
+                    if (frameSize <= 0 || pos + 10 + frameSize > maxEnd) break;
+
+                    const dataStart = pos + 10;
+                    const frameBytes = new Uint8Array(view.buffer, dataStart, frameSize);
+
+                    if (frameId === "TIT2" || frameId === "TPE1" || frameId === "TALB" || frameId === "TRCK") {
+                        const encoding = frameBytes[0];
+                        const text = this.decodeText(frameBytes.subarray(1), encoding);
+                        if (frameId === "TIT2" && text) res.title = text;
+                        if (frameId === "TPE1" && text) res.artist = text;
+                        if (frameId === "TALB" && text) res.album = text;
+                        if (frameId === "TRCK" && text) {
+                            const num = parseInt(text.split("/")[0], 10);
+                            if (!isNaN(num)) res.track = num;
+                        }
+                    } else if (frameId === "APIC" && !res.coverUrl) {
+                        const encoding = frameBytes[0];
+                        let idx = 1;
+                        let mime = "";
+                        while (idx < frameBytes.length && frameBytes[idx] !== 0) {
+                            mime += String.fromCharCode(frameBytes[idx++]);
+                        }
+                        idx++; // skip null terminator
+                        idx++; // skip picture type byte
+
+                        if (encoding === 1 || encoding === 2) {
+                            while (idx + 1 < frameBytes.length && !(frameBytes[idx] === 0 && frameBytes[idx + 1] === 0)) {
+                                idx += 2;
+                            }
+                            idx += 2;
+                        } else {
+                            while (idx < frameBytes.length && frameBytes[idx] !== 0) {
+                                idx++;
+                            }
+                            idx++;
+                        }
+
+                        if (idx < frameBytes.length) {
+                            const imgData = frameBytes.subarray(idx);
+                            const blob = new Blob([imgData], { type: mime || "image/jpeg" });
+                            res.coverUrl = URL.createObjectURL(blob);
+                        }
+                    }
+
+                    pos += 10 + frameSize;
+                }
+                return res;
+            },
+
+            // Parse FLAC Vorbis Comments & PICTURE metadata block
+            parseFLAC(view) {
+                const res = {};
+                let pos = 4;
+                while (pos + 4 <= view.byteLength) {
+                    const headerByte = view.getUint8(pos);
+                    const isLast = (headerByte & 0x80) !== 0;
+                    const blockType = headerByte & 0x7f;
+                    const blockLen =
+                        (view.getUint8(pos + 1) << 16) |
+                        (view.getUint8(pos + 2) << 8) |
+                        view.getUint8(pos + 3);
+                    pos += 4;
+
+                    if (pos + blockLen > view.byteLength) break;
+
+                    if (blockType === 4) {
+                        let p = pos;
+                        const vendorLen = view.getUint32(p, true);
+                        p += 4 + vendorLen;
+                        if (p + 4 <= pos + blockLen) {
+                            const count = view.getUint32(p, true);
+                            p += 4;
+                            const decoder = new TextDecoder("utf-8");
+                            for (let i = 0; i < count && p + 4 <= pos + blockLen; i++) {
+                                const len = view.getUint32(p, true);
+                                p += 4;
+                                if (p + len > pos + blockLen) break;
+                                const comment = decoder.decode(new Uint8Array(view.buffer, p, len));
+                                p += len;
+                                const eq = comment.indexOf("=");
+                                if (eq > 0) {
+                                    const key = comment.slice(0, eq).toUpperCase();
+                                    const val = comment.slice(eq + 1).trim();
+                                    if (key === "TITLE") res.title = val;
+                                    if (key === "ARTIST") res.artist = val;
+                                    if (key === "ALBUM") res.album = val;
+                                    if (key === "TRACKNUMBER") {
+                                        const n = parseInt(val.split("/")[0], 10);
+                                        if (!isNaN(n)) res.track = n;
+                                    }
+                                }
+                            }
+                        }
+                    } else if (blockType === 6 && !res.coverUrl) {
+                        let p = pos + 4;
+                        const mimeLen = view.getUint32(p, false);
+                        p += 4;
+                        const mime = this.getAscii(view, p, mimeLen);
+                        p += mimeLen;
+                        const descLen = view.getUint32(p, false);
+                        p += 4 + descLen + 16;
+                        if (p + 4 <= pos + blockLen) {
+                            const dataLen = view.getUint32(p, false);
+                            p += 4;
+                            if (p + dataLen <= pos + blockLen) {
+                                const imgBytes = new Uint8Array(view.buffer, p, dataLen);
+                                res.coverUrl = URL.createObjectURL(new Blob([imgBytes], { type: mime || "image/jpeg" }));
+                            }
+                        }
+                    }
+
+                    pos += blockLen;
+                    if (isLast) break;
+                }
+                return res;
+            },
+
+            // Locate 'moov' box anywhere in MP4/M4A file and parse metadata atoms
+            async parseMP4FromFile(file) {
+                let offset = 0;
+                while (offset + 8 <= file.size) {
+                    const boxHeaderBuf = await file.slice(offset, offset + 16).arrayBuffer();
+                    const boxView = new DataView(boxHeaderBuf);
+                    let size = boxView.getUint32(0, false);
+                    const type = this.getAscii(boxView, 4, 4);
+                    let headerSize = 8;
+
+                    if (size === 1 && boxView.byteLength >= 16) {
+                        // 64-bit extended box size
+                        const high = boxView.getUint32(8, false);
+                        const low = boxView.getUint32(12, false);
+                        size = high * 4294967296 + low;
+                        headerSize = 16;
+                    }
+                    if (size < headerSize) break;
+
+                    if (type === "moov") {
+                        const moovLen = Math.min(size, 8 * 1024 * 1024);
+                        const moovBuf = await file.slice(offset, offset + moovLen).arrayBuffer();
+                        return this.parseMP4(new DataView(moovBuf));
+                    }
+                    offset += size;
+                }
+                return {};
+            },
+
+            // Parse MP4 / M4A iTunes metadata atoms (©nam, ©ART, ©alb, trkn, covr)
+            parseMP4(view) {
+                const res = {};
+                const decoder = new TextDecoder("utf-8");
+
+                const scanAtoms = (start, end) => {
+                    let p = start;
+                    while (p + 8 <= end) {
+                        let size = view.getUint32(p, false);
+                        const type = this.getAscii(view, p + 4, 4);
+                        if (size < 8 || p + size > end) break;
+
+                        if (["moov", "udta", "ilst"].includes(type)) {
+                            scanAtoms(p + 8, p + size);
+                        } else if (type === "meta") {
+                            scanAtoms(p + 12, p + size);
+                        } else if (["\xA9nam", "\xA9ART", "\xA9alb", "trkn", "covr"].includes(type)) {
+                            let dp = p + 8;
+                            while (dp + 16 <= p + size) {
+                                const dSize = view.getUint32(dp, false);
+                                const dType = this.getAscii(view, dp + 4, 4);
+                                if (dSize < 16 || dp + dSize > p + size) break;
+                                if (dType === "data") {
+                                    const dataIndicator = view.getUint32(dp + 8, false);
+                                    const payload = new Uint8Array(view.buffer, dp + 16, dSize - 16);
+                                    if (type === "\xA9nam") res.title = decoder.decode(payload).trim();
+                                    if (type === "\xA9ART") res.artist = decoder.decode(payload).trim();
+                                    if (type === "\xA9alb") res.album = decoder.decode(payload).trim();
+                                    if (type === "trkn" && payload.length >= 4) {
+                                        const trk = (payload[2] << 8) | payload[3];
+                                        if (trk > 0) res.track = trk;
+                                    }
+                                    if (type === "covr" && !res.coverUrl) {
+                                        const mime = dataIndicator === 14 ? "image/png" : "image/jpeg";
+                                        res.coverUrl = URL.createObjectURL(new Blob([payload], { type: mime }));
+                                    }
+                                }
+                                dp += dSize;
+                            }
+                        }
+                        p += size;
+                    }
+                };
+
+                scanAtoms(0, view.byteLength);
+                return res;
+            }
+        };
+
+        // ==========================================
+        // 4. APPLICATION STATE & LIBRARY STORE
+        // ==========================================
+        const state = {
+            rawTracks: [],        // Cumulative master store of all uploaded track objects (unlimited)
+            fileFingerprints: new Set(), // Deduplication keys for uploaded files
+            tracks: [],           // Ordered list of all loaded track objects
+            albums: [],           // Grouped albums sorted alphabetically, each with tracks sorted strictly by track number
+            artists: [],          // Grouped artists
+            menuStack: [],        // Navigation stack of views
+            queue: [],            // Current sequential album/playlist queue
+            queueIndex: -1,       // Current playing index in queue
+            isPlaying: false,
+            volume: 0.85,
+            volumeOverlayTimer: null,
+            showVolumeBar: false,
+            backlightDim: false,
+            highContrast: false,
+            isLoading: false,
+            loadingProgress: "",
+            allocatedUrls: []     // Track created object URLs for clean revocation on Clear Library
+        };
+
+        // Audio element reference
+        const audioEl = document.getElementById("audioPlayer");
+        audioEl.volume = state.volume;
+
+        // ==========================================
+        // 5. MENU VIEWS & NAVIGATION CONTROLLER
+        // ==========================================
+        function getMainMenuItems() {
+            const items = [
+                { id: "music", label: "Music", hasChevron: true },
+                { id: "coverflow", label: "Cover Flow", hasChevron: true, badge: state.albums.length ? `${state.albums.length}` : "" },
+                { id: "albums", label: "Albums", hasChevron: true, badge: state.albums.length ? `${state.albums.length}` : "" },
+                { id: "artists", label: "Artists", hasChevron: true, badge: state.artists.length ? `${state.artists.length}` : "" },
+                { id: "songs", label: "Songs", hasChevron: true, badge: state.tracks.length ? `${state.tracks.length}` : "" },
+                { id: "settings", label: "Settings", hasChevron: true },
+                { id: "load_folder", label: "Add Music Folder...", hasChevron: false },
+                { id: "load_files", label: "Add Audio Files...", hasChevron: false }
+            ];
+
+            if (state.queue.length > 0 && state.queueIndex >= 0) {
+                items.push({ id: "now_playing", label: "Now Playing", hasChevron: true });
+            }
+            return items;
+        }
+
+        function resetToMainMenu() {
+            state.menuStack = [
+                {
+                    type: "menu",
+                    id: "main",
+                    title: "iPod",
+                    selectedIndex: 0
+                }
+            ];
+            renderScreen();
+        }
+
+        function pushView(viewObj) {
+            state.menuStack.push(viewObj);
+            renderScreen();
+        }
+
+        function popView() {
+            if (state.menuStack.length > 1) {
+                state.menuStack.pop();
+                renderScreen();
+            }
+        }
+
+        function currentView() {
+            return state.menuStack[state.menuStack.length - 1];
+        }
+
+        // ==========================================
+        // 6. CUMULATIVE LOCAL FOLDER & FILE LOADING
+        // ==========================================
+        function buildFileFingerprint(file) {
+            const rel = file.webkitRelativePath || file.name;
+            return `${rel}::${file.size}::${file.lastModified}`;
+        }
+
+        function rebuildLibraryCollections() {
+            // Group all cumulative tracks into Albums
+            const albumMap = new Map();
+            for (const trk of state.rawTracks) {
+                const normalizedAlbum = (trk.album && trk.album.trim()) ? trk.album.trim() : "Singles";
+                const normalizedArtist = (trk.artist && trk.artist.trim()) ? trk.artist.trim() : "Unknown Artist";
+
+                // Keep all standalone "Singles" without album metadata neatly grouped together or per-album
+                const isGenericSingles = normalizedAlbum.toLowerCase() === "singles" || normalizedAlbum.toLowerCase() === "local music";
+                const albumKey = isGenericSingles
+                    ? "__singles_collection__"
+                    : `${normalizedAlbum.toLowerCase()}__${normalizedArtist.toLowerCase()}`;
+                const displayAlbumTitle = isGenericSingles ? "Singles" : normalizedAlbum;
+                const displayAlbumArtist = isGenericSingles ? "Various Artists" : normalizedArtist;
+
+                if (!albumMap.has(albumKey)) {
+                    albumMap.set(albumKey, {
+                        key: albumKey,
+                        title: displayAlbumTitle,
+                        artist: displayAlbumArtist,
+                        coverUrl: trk.coverUrl,
+                        hasRealCover: trk.hasRealCover,
+                        tracks: []
+                    });
+                }
+                const alb = albumMap.get(albumKey);
+                // Prefer any valid embedded or folder cover found across tracks in the album
+                if (!alb.hasRealCover && trk.hasRealCover) {
+                    alb.coverUrl = trk.coverUrl;
+                    alb.hasRealCover = true;
+                }
+                alb.tracks.push(trk);
+            }
+
+            // Sort tracks inside every album STRICTLY in track order (1, 2, 3...)
+            const albumsList = Array.from(albumMap.values()).map(alb => {
+                alb.tracks.sort((a, b) => {
+                    if (a.track !== b.track) return a.track - b.track;
+                    return a.title.localeCompare(b.title, undefined, { numeric: true });
+                });
+                // Ensure every track in the album shares the album's resolved cover image if it lacked one
+                if (alb.key !== "__singles_collection__") {
+                    alb.tracks.forEach(t => {
+                        if (!t.hasRealCover && alb.hasRealCover) {
+                            t.coverUrl = alb.coverUrl;
+                        }
+                    });
+                }
+                return alb;
+            });
+
+            // Sort albums alphabetically (keeping "Singles" neatly in alphabetical order)
+            albumsList.sort((a, b) => a.title.localeCompare(b.title, undefined, { numeric: true }));
+
+            // Group artists across all cumulative tracks
+            const artistMap = new Map();
+            for (const trk of state.rawTracks) {
+                const artName = (trk.artist && trk.artist.trim()) ? trk.artist.trim() : "Unknown Artist";
+                const artKey = artName.toLowerCase();
+                if (!artistMap.has(artKey)) {
+                    artistMap.set(artKey, {
+                        name: artName,
+                        albumMap: new Map()
+                    });
+                }
+                const artEntry = artistMap.get(artKey);
+                const trkAlbumTitle = (trk.album && trk.album.trim()) ? trk.album.trim() : "Singles";
+                const trkAlbumKey = trkAlbumTitle.toLowerCase();
+                if (!artEntry.albumMap.has(trkAlbumKey)) {
+                    artEntry.albumMap.set(trkAlbumKey, {
+                        key: `${trkAlbumKey}__${artKey}`,
+                        title: trkAlbumTitle,
+                        artist: artName,
+                        coverUrl: trk.coverUrl,
+                        hasRealCover: trk.hasRealCover,
+                        tracks: []
+                    });
+                }
+                const artistAlb = artEntry.albumMap.get(trkAlbumKey);
+                if (!artistAlb.hasRealCover && trk.hasRealCover) {
+                    artistAlb.coverUrl = trk.coverUrl;
+                    artistAlb.hasRealCover = true;
+                }
+                artistAlb.tracks.push(trk);
+            }
+
+            const artistsList = Array.from(artistMap.values())
+                .map(entry => {
+                    const artAlbums = Array.from(entry.albumMap.values()).map(alb => {
+                        alb.tracks.sort((a, b) => {
+                            if (a.track !== b.track) return a.track - b.track;
+                            return a.title.localeCompare(b.title, undefined, { numeric: true });
+                        });
+                        alb.tracks.forEach(t => {
+                            if (!t.hasRealCover && alb.hasRealCover) {
+                                t.coverUrl = alb.coverUrl;
+                            }
+                        });
+                        return alb;
+                    }).sort((a, b) => a.title.localeCompare(b.title, undefined, { numeric: true }));
+
+                    return {
+                        name: entry.name,
+                        albums: artAlbums
+                    };
+                })
+                .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
+
+            // Flat list of all tracks ordered by Album then Track Number
+            const orderedAllTracks = albumsList.flatMap(alb => alb.tracks);
+
+            state.tracks = orderedAllTracks;
+            state.albums = albumsList;
+            state.artists = artistsList;
+        }
+
+        function clearLibrary() {
+            audioEl.pause();
+            audioEl.removeAttribute("src");
+            audioEl.load();
+
+            state.allocatedUrls.forEach(url => {
+                try { URL.revokeObjectURL(url); } catch (e) {}
+            });
+            state.allocatedUrls = [];
+            state.fileFingerprints.clear();
+            state.rawTracks = [];
+            state.tracks = [];
+            state.albums = [];
+            state.artists = [];
+            state.queue = [];
+            state.queueIndex = -1;
+            state.isPlaying = false;
+
+            resetToMainMenu();
+        }
+
+        async function handleSelectedFiles(fileList) {
+            if (!fileList || fileList.length === 0) return;
+
+            const allFiles = Array.from(fileList);
+            const audioExtensions = /\.(mp3|m4a|flac|wav|ogg|aac|opus)$/i;
+            const imageExtensions = /\.(jpg|jpeg|png|webp)$/i;
+
+            const audioFiles = allFiles.filter(f => f.type.startsWith("audio/") || audioExtensions.test(f.name));
+            const imageFiles = allFiles.filter(f => f.type.startsWith("image/") || imageExtensions.test(f.name));
+
+            if (audioFiles.length === 0) {
+                state.loadingProgress = "No audio files found in selection.";
+                renderScreen();
+                setTimeout(() => {
+                    state.loadingProgress = "";
+                    renderScreen();
+                }, 2000);
+                return;
+            }
+
+            // Filter out exact duplicate files already in the library
+            const newAudioFiles = audioFiles.filter(f => !state.fileFingerprints.has(buildFileFingerprint(f)));
+
+            if (newAudioFiles.length === 0) {
+                state.loadingProgress = "Already in library.";
+                renderScreen();
+                setTimeout(() => {
+                    state.loadingProgress = "";
+                    renderScreen();
+                }, 1400);
+                return;
+            }
+
+            state.isLoading = true;
+            state.loadingProgress = `Adding 0 / ${newAudioFiles.length} tracks...`;
+            renderScreen();
+
+            // Map folder or root cover images (prioritizing cover.jpg / folder.jpg / front.jpg)
+            const folderImageMap = new Map();
+            imageFiles.sort((a, b) => {
+                const score = name => (/cover|folder|front|album/i.test(name) ? 0 : 1);
+                return score(a.name) - score(b.name);
+            });
+            for (const imgFile of imageFiles) {
+                const dir = MetadataParser.getDirectoryPath(imgFile);
+                if (!folderImageMap.has(dir)) {
+                    const imgUrl = URL.createObjectURL(imgFile);
+                    state.allocatedUrls.push(imgUrl);
+                    folderImageMap.set(dir, imgUrl);
+                }
+            }
+
+            const baseIndex = state.rawTracks.length;
+            for (let i = 0; i < newAudioFiles.length; i++) {
+                const file = newAudioFiles[i];
+                if (i % 4 === 0 || i === newAudioFiles.length - 1) {
+                    state.loadingProgress = `Adding ${i + 1} / ${newAudioFiles.length} tracks...`;
+                    renderScreen();
+                }
+
+                const meta = await MetadataParser.parseAudioFile(file, folderImageMap);
+                if (meta.coverUrl && meta.coverUrl.startsWith("blob:")) {
+                    state.allocatedUrls.push(meta.coverUrl);
+                }
+                const audioUrl = URL.createObjectURL(file);
+                state.allocatedUrls.push(audioUrl);
+
+                const fingerprint = buildFileFingerprint(file);
+                state.fileFingerprints.add(fingerprint);
+
+                state.rawTracks.push({
+                    id: `trk_${baseIndex + i}_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+                    file,
+                    audioUrl,
+                    title: meta.title || file.name,
+                    artist: meta.artist || "Unknown Artist",
+                    album: meta.album || "Singles",
+                    track: meta.track || 999,
+                    coverUrl: meta.coverUrl || DEFAULT_COVER_URL,
+                    hasRealCover: Boolean(meta.coverUrl)
+                });
+            }
+
+            // Rebuild combined Albums, Artists, and Songs from all cumulative tracks
+            rebuildLibraryCollections();
+
+            state.isLoading = false;
+            state.loadingProgress = "";
+
+            // Preserve active Now Playing screen if audio is currently playing, otherwise show updated Albums list
+            if (state.isPlaying && currentView().type === "now_playing") {
+                renderScreen();
+            } else {
+                const mainSelectedIdx = currentView().type === "now_playing" ? getMainMenuItems().length - 1 : 2;
+                state.menuStack = [
+                    { type: "menu", id: "main", title: "iPod", selectedIndex: Math.min(2, mainSelectedIdx) },
+                    { type: "albums", title: "Albums", albums: state.albums, selectedIndex: 0 }
+                ];
+                renderScreen();
+            }
+        }
+
+        // ==========================================
+        // 7. SEQUENTIAL ALBUM PLAYBACK ENGINE
+        // ==========================================
+        function playQueueAt(queueTracks, startIndex) {
+            if (!queueTracks || queueTracks.length === 0) return;
+            state.queue = queueTracks;
+            state.queueIndex = Math.max(0, Math.min(startIndex, queueTracks.length - 1));
+
+            const track = state.queue[state.queueIndex];
+            audioEl.src = track.audioUrl;
+            audioEl.play().then(() => {
+                state.isPlaying = true;
+                updateHeaderPlayIcon();
+            }).catch(() => {
+                state.isPlaying = false;
+                updateHeaderPlayIcon();
+            });
+
+            // Push Now Playing view if not already on top
+            if (currentView().type !== "now_playing") {
+                pushView({ type: "now_playing", title: "Now Playing" });
+            } else {
+                renderScreen();
+            }
+        }
+
+        function togglePlayPause() {
+            if (state.queue.length === 0) {
+                // If user presses Play on an album or song in menu, start playing it!
+                const view = currentView();
+                if (view.type === "albums" && view.albums.length > 0) {
+                    const selectedAlbum = view.albums[view.selectedIndex];
+                    playQueueAt(selectedAlbum.tracks, 0);
+                    return;
+                }
+                if (view.type === "album_tracks" && view.album.tracks.length > 0) {
+                    playQueueAt(view.album.tracks, view.selectedIndex);
+                    return;
+                }
+                if (view.type === "songs" && state.tracks.length > 0) {
+                    playQueueAt(state.tracks, view.selectedIndex);
+                    return;
+                }
+                if (state.albums.length > 0) {
+                    playQueueAt(state.albums[0].tracks, 0);
+                }
+                return;
+            }
+
+            if (audioEl.paused) {
+                audioEl.play().then(() => {
+                    state.isPlaying = true;
+                    updateHeaderPlayIcon();
+                });
+            } else {
+                audioEl.pause();
+                state.isPlaying = false;
+                updateHeaderPlayIcon();
+            }
+        }
+
+        function playNextTrack() {
+            // If nothing is queued yet, start playback from the currently selected album/track or library
+            if (state.queue.length === 0) {
+                const view = currentView();
+                if (view.type === "albums" && view.albums.length > 0) {
+                    const selectedAlbum = view.albums[view.selectedIndex];
+                    playQueueAt(selectedAlbum.tracks, 0);
+                    return;
+                }
+                if (view.type === "album_tracks" && view.album.tracks.length > 0) {
+                    const nextIdx = Math.min(view.selectedIndex + 1, view.album.tracks.length - 1);
+                    playQueueAt(view.album.tracks, nextIdx);
+                    return;
+                }
+                if (view.type === "songs" && state.tracks.length > 0) {
+                    const nextIdx = Math.min(view.selectedIndex + 1, state.tracks.length - 1);
+                    playQueueAt(state.tracks, nextIdx);
+                    return;
+                }
+                if (state.albums.length > 0) {
+                    playQueueAt(state.albums[0].tracks, 0);
+                } else if (state.tracks.length > 0) {
+                    playQueueAt(state.tracks, 0);
+                }
+                return;
+            }
+
+            // Advance sequentially within the current album/queue
+            if (state.queueIndex + 1 < state.queue.length) {
+                playQueueAt(state.queue, state.queueIndex + 1);
+                return;
+            }
+
+            // At the end of the current album queue: advance to the next album in the library
+            const currentTrack = state.queue[state.queueIndex];
+            if (state.albums.length > 1 && currentTrack) {
+                const currentAlbumIdx = state.albums.findIndex(
+                    a => a.tracks.some(t => t.id === currentTrack.id)
+                );
+                if (currentAlbumIdx >= 0 && currentAlbumIdx + 1 < state.albums.length) {
+                    playQueueAt(state.albums[currentAlbumIdx + 1].tracks, 0);
+                    return;
+                }
+            }
+
+            // If at the very last track of the entire library, stay stopped at track end
+            audioEl.pause();
+            audioEl.currentTime = 0;
+            state.isPlaying = false;
+            updateHeaderPlayIcon();
+            renderNowPlayingProgress();
+        }
+
+        function playPrevTrack() {
+            if (state.queue.length === 0) {
+                const view = currentView();
+                if (view.type === "albums" && view.albums.length > 0) {
+                    playQueueAt(view.albums[view.selectedIndex].tracks, 0);
+                } else if (view.type === "album_tracks" && view.album.tracks.length > 0) {
+                    playQueueAt(view.album.tracks, view.selectedIndex);
+                } else if (state.tracks.length > 0) {
+                    playQueueAt(state.tracks, 0);
+                }
+                return;
+            }
+
+            if (audioEl.currentTime > 3) {
+                audioEl.currentTime = 0;
+                renderNowPlayingProgress();
+            } else if (state.queueIndex > 0) {
+                playQueueAt(state.queue, state.queueIndex - 1);
+            } else {
+                // If at Track 1 of an album, move to the previous album's last track if available
+                const currentTrack = state.queue[state.queueIndex];
+                if (state.albums.length > 1 && currentTrack) {
+                    const currentAlbumIdx = state.albums.findIndex(
+                        a => a.tracks.some(t => t.id === currentTrack.id)
+                    );
+                    if (currentAlbumIdx > 0) {
+                        const prevAlbum = state.albums[currentAlbumIdx - 1];
+                        playQueueAt(prevAlbum.tracks, prevAlbum.tracks.length - 1);
+                        return;
+                    }
+                }
+                audioEl.currentTime = 0;
+                renderNowPlayingProgress();
+            }
+        }
+
+        // Automatically advance to next track in the album in strict order
+        audioEl.addEventListener("ended", () => {
+            if (state.queueIndex + 1 < state.queue.length) {
+                playQueueAt(state.queue, state.queueIndex + 1);
+            } else {
+                state.isPlaying = false;
+                updateHeaderPlayIcon();
+            }
+        });
+
+        audioEl.addEventListener("timeupdate", () => {
+            if (currentView().type === "now_playing" && !state.showVolumeBar) {
+                renderNowPlayingProgress();
+            }
+        });
+
+        audioEl.addEventListener("loadedmetadata", () => {
+            if (currentView().type === "now_playing") {
+                renderNowPlayingProgress();
+            }
+        });
+
+        // ==========================================
+        // 8. SCROLLING & SELECTION HANDLERS
+        // ==========================================
+        function handleWheelScroll(direction) {
+            // direction: +1 (clockwise / down) or -1 (counter-clockwise / up)
+            const view = currentView();
+            if (!view) return;
+
+            if (view.type === "now_playing") {
+                // Adjust volume smoothly
+                state.volume = Math.max(0, Math.min(1, state.volume + direction * 0.04));
+                audioEl.volume = state.volume;
+                state.showVolumeBar = true;
+                clickSound.playClick();
+                renderNowPlayingBottom();
+
+                clearTimeout(state.volumeOverlayTimer);
+                state.volumeOverlayTimer = setTimeout(() => {
+                    state.showVolumeBar = false;
+                    if (currentView().type === "now_playing") {
+                        renderNowPlayingBottom();
+                    }
+                }, 1400);
+                return;
+            }
+
+            const count = getViewItemCount(view);
+            if (count <= 0) return;
+
+            const nextIdx = Math.max(0, Math.min(count - 1, view.selectedIndex + direction));
+            if (nextIdx !== view.selectedIndex) {
+                view.selectedIndex = nextIdx;
+                clickSound.playClick();
+                renderScreen();
+            }
+        }
+
+        function getViewItemCount(view) {
+            if (view.type === "menu") {
+                if (view.id === "main") return getMainMenuItems().length;
+                if (view.id === "music") return 4;
+                if (view.id === "settings") return 6;
+            }
+            if (view.type === "albums" || view.type === "coverflow") return view.albums.length;
+            if (view.type === "artists") return view.artists.length;
+            if (view.type === "album_tracks") return view.album.tracks.length;
+            if (view.type === "songs") return state.tracks.length;
+            return 0;
+        }
+
+        function handleCenterSelect() {
+            clickSound.playClick();
+            const view = currentView();
+            if (!view) return;
+
+            if (view.type === "now_playing") {
+                togglePlayPause();
+                return;
+            }
+
+            if (view.type === "menu" && view.id === "main") {
+                const items = getMainMenuItems();
+                const selected = items[view.selectedIndex];
+                if (!selected) return;
+
+                if (selected.id === "music") {
+                    pushView({ type: "menu", id: "music", title: "Music", selectedIndex: 0 });
+                } else if (selected.id === "coverflow") {
+                    pushView({ type: "coverflow", title: "Cover Flow", albums: state.albums, selectedIndex: 0 });
+                } else if (selected.id === "albums") {
+                    pushView({ type: "albums", title: "Albums", albums: state.albums, selectedIndex: 0 });
+                } else if (selected.id === "artists") {
+                    pushView({ type: "artists", title: "Artists", artists: state.artists, selectedIndex: 0 });
+                } else if (selected.id === "songs") {
+                    pushView({ type: "songs", title: "Songs", selectedIndex: 0 });
+                } else if (selected.id === "settings") {
+                    pushView({ type: "menu", id: "settings", title: "Settings", selectedIndex: 0 });
+                } else if (selected.id === "load_folder") {
+                    document.getElementById("folderInput").click();
+                } else if (selected.id === "load_files") {
+                    document.getElementById("filesInput").click();
+                } else if (selected.id === "now_playing") {
+                    pushView({ type: "now_playing", title: "Now Playing" });
+                }
+                return;
+            }
+
+            if (view.type === "menu" && view.id === "music") {
+                const idx = view.selectedIndex;
+                if (idx === 0) pushView({ type: "coverflow", title: "Cover Flow", albums: state.albums, selectedIndex: 0 });
+                if (idx === 1) pushView({ type: "albums", title: "Albums", albums: state.albums, selectedIndex: 0 });
+                if (idx === 2) pushView({ type: "artists", title: "Artists", artists: state.artists, selectedIndex: 0 });
+                if (idx === 3) pushView({ type: "songs", title: "Songs", selectedIndex: 0 });
+                return;
+            }
+
+            if (view.type === "menu" && view.id === "settings") {
+                const idx = view.selectedIndex;
+                if (idx === 0) {
+                    clickSound.enabled = !clickSound.enabled;
+                    if (clickSound.enabled) clickSound.playClick();
+                    renderScreen();
+                } else if (idx === 1) {
+                    state.backlightDim = !state.backlightDim;
+                    document.getElementById("lcdScreen").classList.toggle("backlight-dim", state.backlightDim);
+                    renderScreen();
+                } else if (idx === 2) {
+                    state.highContrast = !state.highContrast;
+                    document.getElementById("lcdScreen").classList.toggle("high-contrast", state.highContrast);
+                    renderScreen();
+                } else if (idx === 3) {
+                    document.getElementById("folderInput").click();
+                } else if (idx === 4) {
+                    document.getElementById("filesInput").click();
+                } else if (idx === 5) {
+                    clearLibrary();
+                }
+                return;
+            }
+
+            if (view.type === "albums" || view.type === "coverflow") {
+                if (view.albums.length === 0) {
+                    document.getElementById("folderInput").click();
+                    return;
+                }
+                const selectedAlbum = view.albums[view.selectedIndex];
+                pushView({
+                    type: "album_tracks",
+                    title: selectedAlbum.title,
+                    album: selectedAlbum,
+                    selectedIndex: 0
+                });
+                return;
+            }
+
+            if (view.type === "artists") {
+                if (view.artists.length === 0) {
+                    document.getElementById("folderInput").click();
+                    return;
+                }
+                const selectedArtist = view.artists[view.selectedIndex];
+                pushView({
+                    type: "albums",
+                    title: selectedArtist.name,
+                    albums: selectedArtist.albums,
+                    selectedIndex: 0
+                });
+                return;
+            }
+
+            if (view.type === "album_tracks") {
+                // Play the album sequentially in strict order starting from the selected track!
+                playQueueAt(view.album.tracks, view.selectedIndex);
+                return;
+            }
+
+            if (view.type === "songs") {
+                if (state.tracks.length === 0) {
+                    document.getElementById("folderInput").click();
+                    return;
+                }
+                // Find the album containing this track so the rest of the album plays in order
+                const chosen = state.tracks[view.selectedIndex];
+                const parentAlbum = state.albums.find(
+                    a => a.tracks.some(t => t.id === chosen.id)
+                );
+                if (parentAlbum) {
+                    const idxInAlbum = parentAlbum.tracks.findIndex(t => t.id === chosen.id);
+                    playQueueAt(parentAlbum.tracks, Math.max(0, idxInAlbum));
+                } else {
+                    playQueueAt(state.tracks, view.selectedIndex);
+                }
+            }
+        }
+
+        // ==========================================
+        // 9. LCD SCREEN RENDERING
+        // ==========================================
+        function updateHeaderPlayIcon() {
+            const container = document.getElementById("headerPlayIcon");
+            if (state.queue.length === 0) {
+                container.innerHTML = "";
+                return;
+            }
+            if (state.isPlaying) {
+                container.innerHTML = `<svg width="9" height="10" viewBox="0 0 10 12" fill="#2563eb"><polygon points="1,1 9,6 1,11"/></svg>`;
+            } else {
+                container.innerHTML = `<svg width="9" height="10" viewBox="0 0 10 12" fill="#2563eb"><rect x="1" y="1" width="2.8" height="10"/><rect x="6" y="1" width="2.8" height="10"/></svg>`;
+            }
+        }
+
+        function formatTime(sec) {
+            if (!isFinite(sec) || sec < 0) return "0:00";
+            const m = Math.floor(sec / 60);
+            const s = Math.floor(sec % 60);
+            return `${m}:${s < 10 ? "0" : ""}${s}`;
+        }
+
+        function renderScreen() {
+            const view = currentView();
+            const headerTitle = document.getElementById("headerTitle");
+            const lcdBody = document.getElementById("lcdBody");
+
+            updateHeaderPlayIcon();
+
+            if (state.isLoading || state.loadingProgress) {
+                headerTitle.textContent = "Adding Music";
+                lcdBody.innerHTML = `
+                    <div class="flex-1 flex flex-col items-center justify-center p-4 text-center bg-white">
+                        <div class="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mb-3"></div>
+                        <div class="text-xs font-bold text-slate-800">${escapeHtml(state.loadingProgress)}</div>
+                        <div class="text-[10px] text-slate-500 mt-1">Extracting ID3/MP4 album art &amp; track numbers...</div>
+                    </div>
+                `;
+                return;
+            }
+
+            headerTitle.textContent = view.title || "iPod";
+
+            if (view.type === "menu") {
+                let items = [];
+                if (view.id === "main") {
+                    items = getMainMenuItems();
+                } else if (view.id === "music") {
+                    items = [
+                        { label: "Cover Flow", hasChevron: true, badge: state.albums.length ? `${state.albums.length}` : "" },
+                        { label: "Albums", hasChevron: true, badge: state.albums.length ? `${state.albums.length}` : "" },
+                        { label: "Artists", hasChevron: true, badge: state.artists.length ? `${state.artists.length}` : "" },
+                        { label: "Songs", hasChevron: true, badge: state.tracks.length ? `${state.tracks.length}` : "" }
+                    ];
+                } else if (view.id === "settings") {
+                    items = [
+                        { label: "Clicker", rightText: clickSound.enabled ? "On" : "Off" },
+                        { label: "Backlight", rightText: state.backlightDim ? "Dim" : "Bright" },
+                        { label: "Contrast", rightText: state.highContrast ? "High" : "Normal" },
+                        { label: "Add Music Folder...", hasChevron: true },
+                        { label: "Add Audio Files...", hasChevron: true },
+                        { label: "Clear Library", rightText: state.tracks.length ? `${state.tracks.length}` : "Empty" }
+                    ];
+                }
+
+                lcdBody.innerHTML = `
+                    <div class="menu-list" id="menuListContainer">
+                        ${items.map((item, i) => `
+                            <div class="menu-item ${i === view.selectedIndex ? "selected" : ""}" data-index="${i}">
+                                <span class="menu-item-label">${escapeHtml(item.label)}</span>
+                                ${item.badge ? `<span class="text-[10px] opacity-75 font-semibold">${escapeHtml(item.badge)}</span>` : ""}
+                                ${item.rightText ? `<span class="text-[11px] font-semibold opacity-85">${escapeHtml(item.rightText)}</span>` : ""}
+                                ${item.hasChevron ? `<span class="menu-chevron">&rsaquo;</span>` : ""}
+                            </div>
+                        `).join("")}
+                    </div>
+                `;
+
+                bindMenuListClicks();
+                scrollSelectedIntoView();
+                return;
+            }
+
+            if (view.type === "albums") {
+                if (view.albums.length === 0) {
+                    renderEmptyLibraryPrompt(lcdBody, "No Albums Loaded", "Add unlimited music folders, albums, or single songs from your computer.");
+                    return;
+                }
+
+                lcdBody.innerHTML = `
+                    <div class="menu-list" id="menuListContainer">
+                        ${view.albums.map((alb, i) => `
+                            <div class="menu-item tall-item ${i === view.selectedIndex ? "selected" : ""}" data-index="${i}">
+                                <img src="${alb.coverUrl}" alt="" class="album-thumb">
+                                <div class="menu-item-label">
+                                    <div class="truncate leading-tight">${escapeHtml(alb.title)}</div>
+                                    <span class="menu-item-sub truncate">${escapeHtml(alb.artist)} &bull; ${alb.tracks.length} song${alb.tracks.length === 1 ? "" : "s"}</span>
+                                </div>
+                                <span class="menu-chevron">&rsaquo;</span>
+                            </div>
+                        `).join("")}
+                    </div>
+                `;
+                bindMenuListClicks();
+                scrollSelectedIntoView();
+                return;
+            }
+
+            if (view.type === "coverflow") {
+                if (view.albums.length === 0) {
+                    renderEmptyLibraryPrompt(lcdBody, "Cover Flow Empty", "Add your local music folders or single songs to browse album covers.");
+                    return;
+                }
+
+                const sel = view.selectedIndex;
+                const currentAlb = view.albums[sel];
+                let cardsHtml = "";
+
+                // Render visible range around selected album
+                for (let i = Math.max(0, sel - 3); i <= Math.min(view.albums.length - 1, sel + 3); i++) {
+                    const offset = i - sel;
+                    const alb = view.albums[i];
+                    let transform = "";
+                    let zIndex = 10 - Math.abs(offset);
+                    let opacity = 1;
+
+                    if (offset === 0) {
+                        transform = "translateX(0px) scale(1.06) rotateY(0deg)";
+                    } else if (offset < 0) {
+                        const x = -54 + (offset + 1) * 24;
+                        transform = `translateX(${x}px) scale(0.78) rotateY(48deg)`;
+                        opacity = 0.88;
+                    } else {
+                        const x = 54 + (offset - 1) * 24;
+                        transform = `translateX(${x}px) scale(0.78) rotateY(-48deg)`;
+                        opacity = 0.88;
+                    }
+
+                    cardsHtml += `
+                        <div class="cf-card" data-index="${i}" style="transform: ${transform}; z-index: ${zIndex}; opacity: ${opacity};">
+                            <img src="${alb.coverUrl}" alt="">
+                        </div>
+                    `;
+                }
+
+                lcdBody.innerHTML = `
+                    <div class="coverflow-view">
+                        <div class="coverflow-stage">${cardsHtml}</div>
+                        <div class="cf-meta">
+                            <div class="cf-album-title">${escapeHtml(currentAlb.title)}</div>
+                            <div class="cf-album-artist">${escapeHtml(currentAlb.artist)} (${sel + 1} of ${view.albums.length})</div>
+                        </div>
+                    </div>
+                `;
+
+                lcdBody.querySelectorAll(".cf-card").forEach(card => {
+                    card.addEventListener("click", () => {
+                        const idx = parseInt(card.dataset.index, 10);
+                        if (idx === view.selectedIndex) {
+                            handleCenterSelect();
+                        } else {
+                            view.selectedIndex = idx;
+                            clickSound.playClick();
+                            renderScreen();
+                        }
+                    });
+                });
+                return;
+            }
+
+            if (view.type === "artists") {
+                if (view.artists.length === 0) {
+                    renderEmptyLibraryPrompt(lcdBody, "No Artists Loaded", "Add local music folders or single songs from your computer.");
+                    return;
+                }
+
+                lcdBody.innerHTML = `
+                    <div class="menu-list" id="menuListContainer">
+                        ${view.artists.map((art, i) => `
+                            <div class="menu-item ${i === view.selectedIndex ? "selected" : ""}" data-index="${i}">
+                                <span class="menu-item-label">${escapeHtml(art.name)}</span>
+                                <span class="text-[10px] opacity-75">${art.albums.length} alb</span>
+                                <span class="menu-chevron">&rsaquo;</span>
+                            </div>
+                        `).join("")}
+                    </div>
+                `;
+                bindMenuListClicks();
+                scrollSelectedIntoView();
+                return;
+            }
+
+            if (view.type === "album_tracks") {
+                const tracks = view.album.tracks;
+                lcdBody.innerHTML = `
+                    <div class="menu-list" id="menuListContainer">
+                        ${tracks.map((trk, i) => {
+                            const trackNumDisplay = trk.track !== 999 ? `${trk.track}. ` : `${i + 1}. `;
+                            const isCurrentPlaying =
+                                state.queue[state.queueIndex] && state.queue[state.queueIndex].id === trk.id;
+                            return `
+                                <div class="menu-item ${i === view.selectedIndex ? "selected" : ""}" data-index="${i}">
+                                    <span class="menu-item-label">${escapeHtml(trackNumDisplay + trk.title)}</span>
+                                    ${isCurrentPlaying ? `<span class="text-[10px] font-bold">&#9835;</span>` : ""}
+                                </div>
+                            `;
+                        }).join("")}
+                    </div>
+                `;
+                bindMenuListClicks();
+                scrollSelectedIntoView();
+                return;
+            }
+
+            if (view.type === "songs") {
+                if (state.tracks.length === 0) {
+                    renderEmptyLibraryPrompt(lcdBody, "No Songs Loaded", "Add folders or single audio files from your computer.");
+                    return;
+                }
+
+                lcdBody.innerHTML = `
+                    <div class="menu-list" id="menuListContainer">
+                        ${state.tracks.map((trk, i) => `
+                            <div class="menu-item ${i === view.selectedIndex ? "selected" : ""}" data-index="${i}">
+                                <span class="menu-item-label">${escapeHtml(trk.title)}</span>
+                                <span class="text-[10px] opacity-70 truncate max-w-[75px]">${escapeHtml(trk.artist)}</span>
+                            </div>
+                        `).join("")}
+                    </div>
+                `;
+                bindMenuListClicks();
+                scrollSelectedIntoView();
+                return;
+            }
+
+            if (view.type === "now_playing") {
+                const trk = state.queue[state.queueIndex];
+                if (!trk) {
+                    popView();
+                    return;
+                }
+
+                lcdBody.innerHTML = `
+                    <div class="now-playing-view">
+                        <div class="np-top-meta">
+                            <span>${state.queueIndex + 1} of ${state.queue.length}</span>
+                            <span class="truncate max-w-[145px] text-right">${escapeHtml(trk.album)}</span>
+                        </div>
+
+                        <div class="np-main-split">
+                            <div class="np-art-wrapper">
+                                <img id="npCoverImg" src="${trk.coverUrl}" alt="Album Art">
+                            </div>
+
+                            <div class="np-track-details">
+                                <div class="np-title">${escapeHtml(trk.title)}</div>
+                                <div class="np-artist">${escapeHtml(trk.artist)}</div>
+                                <div class="np-album">${escapeHtml(trk.album)}</div>
+                            </div>
+                        </div>
+
+                        <div class="np-bottom-bar" id="npBottomBar">
+                            <!-- Scrubber or Volume Bar -->
+                        </div>
+                    </div>
+                `;
+                renderNowPlayingBottom();
+            }
+        }
+
+        function renderNowPlayingBottom() {
+            const container = document.getElementById("npBottomBar");
+            if (!container) return;
+
+            if (state.showVolumeBar) {
+                const pct = Math.round(state.volume * 100);
+                container.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <svg class="w-3.5 h-3.5 text-slate-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217z"/>
+                        </svg>
+                        <div class="scrubber-track flex-1">
+                            <div class="volume-fill" style="width: ${pct}%"></div>
+                        </div>
+                        <svg class="w-4 h-4 text-slate-700 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414z"/>
+                        </svg>
+                    </div>
+                    <div class="scrubber-times">
+                        <span>Volume</span>
+                        <span>${pct}%</span>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `
+                    <div class="scrubber-track" id="scrubberTrack" title="Click to seek">
+                        <div class="scrubber-fill" id="scrubberFill"></div>
+                    </div>
+                    <div class="scrubber-times">
+                        <span id="timeElapsed">0:00</span>
+                        <span id="timeRemaining">-0:00</span>
+                    </div>
+                `;
+
+                const trackEl = document.getElementById("scrubberTrack");
+                if (trackEl) {
+                    trackEl.addEventListener("click", (e) => {
+                        if (!isFinite(audioEl.duration) || audioEl.duration <= 0) return;
+                        const rect = trackEl.getBoundingClientRect();
+                        const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+                        audioEl.currentTime = ratio * audioEl.duration;
+                        renderNowPlayingProgress();
+                    });
+                }
+                renderNowPlayingProgress();
+            }
+        }
+
+        function renderNowPlayingProgress() {
+            const fill = document.getElementById("scrubberFill");
+            const elapsedEl = document.getElementById("timeElapsed");
+            const remEl = document.getElementById("timeRemaining");
+            if (!fill || !elapsedEl || !remEl) return;
+
+            const cur = audioEl.currentTime || 0;
+            const dur = audioEl.duration || 0;
+            const pct = dur > 0 ? Math.min(100, (cur / dur) * 100) : 0;
+
+            fill.style.width = `${pct}%`;
+            elapsedEl.textContent = formatTime(cur);
+            remEl.textContent = dur > 0 ? `-${formatTime(Math.max(0, dur - cur))}` : "-0:00";
+        }
+
+        function renderEmptyLibraryPrompt(container, heading, subtitle) {
+            container.innerHTML = `
+                <div class="flex-1 flex flex-col items-center justify-center p-4 text-center bg-white">
+                    <div class="w-9 h-9 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600 mb-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2z"/>
+                        </svg>
+                    </div>
+                    <div class="text-xs font-bold text-slate-900">${escapeHtml(heading)}</div>
+                    <div class="text-[10.5px] text-slate-500 mt-1 leading-snug">${escapeHtml(subtitle)}</div>
+                    <div class="mt-3 flex items-center justify-center gap-2">
+                        <button id="emptyPromptFolderBtn" class="px-2.5 py-1 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-[10.5px] font-semibold shadow cursor-pointer">
+                            Add Folder
+                        </button>
+                        <button id="emptyPromptFilesBtn" class="px-2.5 py-1 rounded-full bg-slate-700 hover:bg-slate-800 text-white text-[10.5px] font-semibold shadow cursor-pointer">
+                            Add Songs
+                        </button>
+                    </div>
+                </div>
+            `;
+            const folderBtn = document.getElementById("emptyPromptFolderBtn");
+            if (folderBtn) {
+                folderBtn.addEventListener("click", () => document.getElementById("folderInput").click());
+            }
+            const filesBtn = document.getElementById("emptyPromptFilesBtn");
+            if (filesBtn) {
+                filesBtn.addEventListener("click", () => document.getElementById("filesInput").click());
+            }
+        }
+
+        function bindMenuListClicks() {
+            const items = document.querySelectorAll("#menuListContainer .menu-item");
+            items.forEach(item => {
+                item.addEventListener("click", () => {
+                    const idx = parseInt(item.dataset.index, 10);
+                    const view = currentView();
+                    view.selectedIndex = idx;
+                    handleCenterSelect();
+                });
+            });
+        }
+
+        function scrollSelectedIntoView() {
+            const container = document.getElementById("menuListContainer");
+            if (!container) return;
+            const selected = container.querySelector(".menu-item.selected");
+            if (selected) {
+                selected.scrollIntoView({ block: "nearest" });
+            }
+        }
+
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;");
+        }
+
+        // ==========================================
+        // 10. TACTILE CLICK WHEEL ROTATION & BUTTONS
+        // ==========================================
+        (function setupClickWheelInteractions() {
+            const wheel = document.getElementById("clickWheel");
+            const centerBtn = document.getElementById("btnCenter");
+            const btnMenu = document.getElementById("btnMenu");
+            const btnPrev = document.getElementById("btnPrev");
+            const btnNext = document.getElementById("btnNext");
+            const btnPlayPause = document.getElementById("btnPlayPause");
+
+            let activePointerId = null;
+            let isDraggingWheel = false;
+            let pressedButton = null;
+            let startX = 0;
+            let startY = 0;
+            let lastAngle = null;
+            let accumulatedAngle = 0;
+            let totalAngularTravel = 0;
+            let didRotateDuringGesture = false;
+            let wheelScrollAccum = 0;
+
+            const STEP_DEGREES = 14;         // Smooth, responsive degrees per menu tick
+            const DEADZONE_RADIUS = 18;      // Ignore jitter right at the exact center pivot
+            const DRAG_PIXEL_THRESHOLD = 6;  // Pixels moved before converting a tap into a wheel scroll
+
+            function getWheelGeometry(clientX, clientY) {
+                const rect = wheel.getBoundingClientRect();
+                const cx = rect.left + rect.width / 2;
+                const cy = rect.top + rect.height / 2;
+                const dx = clientX - cx;
+                const dy = clientY - cy;
+                const radius = Math.hypot(dx, dy);
+                const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+                return { radius, angle, maxRadius: rect.width / 2 };
+            }
+
+            function isInsideCenterButton(clientX, clientY) {
+                const rect = centerBtn.getBoundingClientRect();
+                const cx = rect.left + rect.width / 2;
+                const cy = rect.top + rect.height / 2;
+                return Math.hypot(clientX - cx, clientY - cy) <= rect.width / 2;
+            }
+
+            function getQuadrantButtonAt(target) {
+                if (!target || !target.closest) return null;
+                return target.closest(".wheel-btn");
+            }
+
+            function triggerQuadrantAction(btn) {
+                if (!btn) return;
+                clickSound.playClick();
+                if (btn === btnMenu) {
+                    popView();
+                } else if (btn === btnPrev) {
+                    if (currentView().type === "coverflow") {
+                        handleWheelScroll(-1);
+                    } else {
+                        playPrevTrack();
+                    }
+                } else if (btn === btnNext) {
+                    if (currentView().type === "coverflow") {
+                        handleWheelScroll(1);
+                    } else {
+                        playNextTrack();
+                    }
+                } else if (btn === btnPlayPause) {
+                    togglePlayPause();
+                }
+            }
+
+            // Capture-phase click blocker ensures native browser 'click' events NEVER fire
+            // on MENU / Prev / Next / Play-Pause; taps are handled cleanly in pointerup instead.
+            wheel.addEventListener("click", (e) => {
+                if (e.target.closest(".wheel-btn")) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                }
+            }, true);
+
+            // Unified Pointer Events: handles both clean quadrant taps and full-ring circular scrolling
+            wheel.addEventListener("pointerdown", (e) => {
+                if (e.button !== undefined && e.button !== 0 && e.pointerType === "mouse") return;
+                if (isInsideCenterButton(e.clientX, e.clientY)) return;
+
+                const geom = getWheelGeometry(e.clientX, e.clientY);
+                if (geom.radius < DEADZONE_RADIUS) return;
+
+                activePointerId = e.pointerId;
+                isDraggingWheel = true;
+                pressedButton = getQuadrantButtonAt(e.target);
+                if (pressedButton) pressedButton.classList.add("pressed");
+
+                startX = e.clientX;
+                startY = e.clientY;
+                didRotateDuringGesture = false;
+                accumulatedAngle = 0;
+                totalAngularTravel = 0;
+                lastAngle = geom.angle;
+
+                try {
+                    wheel.setPointerCapture(e.pointerId);
+                } catch (err) {}
+            });
+
+            wheel.addEventListener("pointermove", (e) => {
+                if (!isDraggingWheel || e.pointerId !== activePointerId || lastAngle === null) return;
+                if (e.cancelable) e.preventDefault();
+
+                const geom = getWheelGeometry(e.clientX, e.clientY);
+                if (geom.radius < DEADZONE_RADIUS) return;
+
+                let delta = geom.angle - lastAngle;
+                if (delta > 180) delta -= 360;
+                if (delta < -180) delta += 360;
+
+                // Ignore extreme single-frame angle spikes if cursor crosses close to center
+                if (Math.abs(delta) > 95) {
+                    lastAngle = geom.angle;
+                    return;
+                }
+
+                const movedDist = Math.hypot(e.clientX - startX, e.clientY - startY);
+                totalAngularTravel += Math.abs(delta);
+                accumulatedAngle += delta;
+                lastAngle = geom.angle;
+
+                // Once finger/cursor moves beyond tap jitter, lock into scroll mode & release button visual state
+                if (!didRotateDuringGesture && (movedDist >= DRAG_PIXEL_THRESHOLD || totalAngularTravel >= 5)) {
+                    didRotateDuringGesture = true;
+                    if (pressedButton) {
+                        pressedButton.classList.remove("pressed");
+                        pressedButton = null;
+                    }
+                }
+
+                // Velocity-adaptive step: faster circular swipes scroll smoothly through long lists
+                const absAccum = Math.abs(accumulatedAngle);
+                const effectiveStep = absAccum > STEP_DEGREES * 3 ? STEP_DEGREES * 0.72 : STEP_DEGREES;
+
+                while (Math.abs(accumulatedAngle) >= effectiveStep) {
+                    didRotateDuringGesture = true;
+                    if (pressedButton) {
+                        pressedButton.classList.remove("pressed");
+                        pressedButton = null;
+                    }
+                    if (accumulatedAngle > 0) {
+                        handleWheelScroll(1);
+                        accumulatedAngle -= effectiveStep;
+                    } else {
+                        handleWheelScroll(-1);
+                        accumulatedAngle += effectiveStep;
+                    }
+                }
+            });
+
+            function finishWheelGesture(e) {
+                if (!isDraggingWheel) return;
+                if (e && activePointerId !== null && e.pointerId !== activePointerId) return;
+
+                const wasDrag = didRotateDuringGesture;
+                const tappedBtn = pressedButton;
+
+                if (pressedButton) {
+                    pressedButton.classList.remove("pressed");
+                }
+
+                if (activePointerId !== null) {
+                    try {
+                        if (wheel.hasPointerCapture(activePointerId)) {
+                            wheel.releasePointerCapture(activePointerId);
+                        }
+                    } catch (err) {}
+                }
+
+                activePointerId = null;
+                isDraggingWheel = false;
+                pressedButton = null;
+                lastAngle = null;
+                accumulatedAngle = 0;
+                totalAngularTravel = 0;
+
+                // Only trigger quadrant button action if pointer was released without scrolling
+                // and stayed over that quadrant button
+                if (!wasDrag && tappedBtn && e && e.type === "pointerup") {
+                    const rect = tappedBtn.getBoundingClientRect();
+                    const insideBtn =
+                        e.clientX >= rect.left - 6 &&
+                        e.clientX <= rect.right + 6 &&
+                        e.clientY >= rect.top - 6 &&
+                        e.clientY <= rect.bottom + 6;
+                    if (insideBtn) {
+                        triggerQuadrantAction(tappedBtn);
+                    }
+                }
+            }
+
+            wheel.addEventListener("pointerup", finishWheelGesture);
+            wheel.addEventListener("pointercancel", finishWheelGesture);
+
+            // Smooth trackpad & mouse wheel scrolling over the iPod with delta accumulation
+            document.getElementById("ipodDevice").addEventListener("wheel", (e) => {
+                e.preventDefault();
+                const rawDelta = Math.abs(e.deltaY) >= Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+                // Normalize line/page wheel modes vs pixel trackpad deltas
+                const normalized = e.deltaMode === 1 ? rawDelta * 28 : (e.deltaMode === 2 ? rawDelta * 120 : rawDelta);
+                wheelScrollAccum += normalized;
+
+                const THRESHOLD = 24;
+                while (Math.abs(wheelScrollAccum) >= THRESHOLD) {
+                    if (wheelScrollAccum > 0) {
+                        handleWheelScroll(1);
+                        wheelScrollAccum -= THRESHOLD;
+                    } else {
+                        handleWheelScroll(-1);
+                        wheelScrollAccum += THRESHOLD;
+                    }
+                }
+            }, { passive: false });
+
+            // Center button stops propagation so clicking Select never starts a wheel drag
+            centerBtn.addEventListener("pointerdown", (e) => {
+                e.stopPropagation();
+            });
+
+            centerBtn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                handleCenterSelect();
+            });
+        })();
+
+        // ==========================================
+        // 11. KEYBOARD SHORTCUTS & DRAG-AND-DROP
+        // ==========================================
+        window.addEventListener("keydown", (e) => {
+            if (e.key === "ArrowDown") {
+                e.preventDefault();
+                handleWheelScroll(1);
+            } else if (e.key === "ArrowUp") {
+                e.preventDefault();
+                handleWheelScroll(-1);
+            } else if (e.key === "Enter") {
+                e.preventDefault();
+                handleCenterSelect();
+            } else if (e.key === "Escape" || e.key === "Backspace") {
+                e.preventDefault();
+                clickSound.playClick();
+                popView();
+            } else if (e.key === "ArrowRight") {
+                e.preventDefault();
+                clickSound.playClick();
+                if (currentView().type === "coverflow") handleWheelScroll(1);
+                else playNextTrack();
+            } else if (e.key === "ArrowLeft") {
+                e.preventDefault();
+                clickSound.playClick();
+                if (currentView().type === "coverflow") handleWheelScroll(-1);
+                else playPrevTrack();
+            } else if (e.key === " ") {
+                e.preventDefault();
+                clickSound.playClick();
+                togglePlayPause();
+            }
+        });
+
+        // File Inputs
+        document.getElementById("folderInput").addEventListener("change", (e) => {
+            handleSelectedFiles(e.target.files);
+            e.target.value = "";
+        });
+        document.getElementById("filesInput").addEventListener("change", (e) => {
+            handleSelectedFiles(e.target.files);
+            e.target.value = "";
+        });
+
+        // Drag & Drop support onto iPod Device (supports unlimited single files, multiple files, and nested directories)
+        const ipodDevice = document.getElementById("ipodDevice");
+        ipodDevice.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            ipodDevice.classList.add("drag-over");
+        });
+        ipodDevice.addEventListener("dragleave", () => {
+            ipodDevice.classList.remove("drag-over");
+        });
+        ipodDevice.addEventListener("drop", async (e) => {
+            e.preventDefault();
+            ipodDevice.classList.remove("drag-over");
+
+            if (e.dataTransfer.items) {
+                const collectedFiles = [];
+                const traverseEntry = async (entry, path = "") => {
+                    if (entry.isFile) {
+                        await new Promise(resolve => {
+                            entry.file(file => {
+                                Object.defineProperty(file, "webkitRelativePath", {
+                                    value: path + file.name
+                                });
+                                collectedFiles.push(file);
+                                resolve();
+                            }, () => resolve());
+                        });
+                    } else if (entry.isDirectory) {
+                        const reader = entry.createReader();
+                        // Loop readEntries until empty array is returned (handles folders with >100 files)
+                        let allEntries = [];
+                        while (true) {
+                            const batch = await new Promise(resolve => {
+                                reader.readEntries(res => resolve(res), () => resolve([]));
+                            });
+                            if (!batch || batch.length === 0) break;
+                            allEntries = allEntries.concat(batch);
+                        }
+                        for (const child of allEntries) {
+                            await traverseEntry(child, path + entry.name + "/");
+                        }
+                    }
+                };
+
+                const items = Array.from(e.dataTransfer.items);
+                for (const item of items) {
+                    const entry = item.webkitGetAsEntry ? item.webkitGetAsEntry() : null;
+                    if (entry) {
+                        await traverseEntry(entry, "");
+                    } else if (item.kind === "file") {
+                        const f = item.getAsFile();
+                        if (f) collectedFiles.push(f);
+                    }
+                }
+                if (collectedFiles.length > 0) {
+                    handleSelectedFiles(collectedFiles);
+                    return;
+                }
+            }
+
+            if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                handleSelectedFiles(e.dataTransfer.files);
+            }
+        });
+
+        // Initialize iPod on Load
+        window.onload = function () {
+            resetToMainMenu();
+        };
+    </script>
+</body>
+</html>
